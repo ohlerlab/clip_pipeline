@@ -3,7 +3,6 @@
 # one row per sample. It can be parsed easily via pandas.
 samples: "config/samples.tsv"
 
-
 FA:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
 THREE_PRIME_ADAPTER_SEQUENCE:

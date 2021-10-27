@@ -1,4 +1,4 @@
-rule sam2bam:
+rule samtools:
     input:
       sam="test_data/{sample}.sam",
     output:

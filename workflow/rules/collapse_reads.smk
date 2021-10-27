@@ -1,6 +1,6 @@
 rule collapse_reads:
     input:
-      fastq="test_data/{sample}_trim.fq.gz",
+      fastq=rules.cutadapt.output.fastq,
     output:
       fastq="test_data/{sample}_trim_collapsed.fq.gz",
     conda:

@@ -1,6 +1,6 @@
 rule cutadapt:
     input:
-      fastq="test_data/{sample}.fq.gz",
+      fastq=lambda wc : samples.loc[wc.sample, "path"],
     output:
       fastq="test_data/{sample}_trim.fastq.gz",
     conda:
