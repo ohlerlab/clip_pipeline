@@ -5,6 +5,8 @@ rule segemehl_idx:
       sege_idx=SEGE_IDX,
     conda:
       "../envs/segemehl.yaml"
+    singularity:
+      "docker://quay.io/biocontainers/segemehl:0.3.1--h39379e4_3"
     shell:
       """
       segemehl.x -x {output.sege_idx} -d {input.fasta}
@@ -19,6 +21,8 @@ rule segemehl:
       sam=temp("test_data/{sample}.sam"),
     conda:
       "../envs/segemehl.yaml"     
+    singularity:
+      "docker://quay.io/biocontainers/segemehl:0.3.1--h39379e4_3"
     shell:
       """
       segemehl.x -S -D 2 -M 1 --briefcigar -t 4 -i {input.sege_idx} -d {FA} -q {input.fastq}  > {output.sam} 
