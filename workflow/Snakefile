@@ -1,19 +1,59 @@
 # The main entry point of your workflow.
 # After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
 
+import pandas as pd
+
+samples = pd.read_csv(config["samples"], sep="\t").set_index("sample", drop=False)
+samples.index.names = ["sample_id"]
+validate(samples, schema="../schemas/samples.schema.yaml")
 
 report: "report/workflow.rst"
 
 # Allow users to fix the underlying OS via singularity.
 singularity: "docker://continuumio/miniconda3"
 
+## To Do :
+#cluster config
+#strand invertion
+
+
+# CLIP specific parameters
+
+shell.executable("/bin/bash")
+from os import path
+from glob import glob
+import sys
+
+configfile: "../config/config.yaml"
+
+FA=config["FA"]
+GTF=config["GTF"]
+SEGE_IDX=config["SEGE_IDX"]
+
+THREE_PRIME_ADAPTER_SEQUENCE=config["THREE_PRIME_ADAPTER_SEQUENCE"]
+FIVE_PRIME_ADAPTER_SEQUENCE=config["FIVE_PRIME_ADAPTER_SEQUENCE"]
+ICLIP_ADAPTER=config["ICLIP_ADAPTER"]
+HITSCLIP_3ADAPTER=config["HITSCLIP_3ADAPTER"]
+HITSCLIP_5ADAPTER=config["HITSCLIP_5ADAPTER"]
+KIT_5ADAPTER=config["KIT_5ADAPTER"]
+NINETEEN_NUCLEOTIDE_MARKER_SEQUENCE=config["NINETEEN_NUCLEOTIDE_MARKER_SEQUENCE"]
+TWENTY_FOUR_NUCLEOTIDE_MARKER_SEQUENCE=config["TWENTY_FOUR_NUCLEOTIDE_MARKER_SEQUENCE"]
+SPECIAL_AD_1=config["SPECIAL_AD_1"]
+SPECIAL_AD_2=config["SPECIAL_AD_2"]
+SPECIAL_AD_3=config["SPECIAL_AD_3"]
+
+THREADS = config["THR"] 
+
+
+
 
 rule all:
     input:
         # The first rule should define the default target files
         # Subsequent target rules can be specified below. They should start with all_*.
+      expand("test_data/{sample}.bam", sample=samples.index)
 
-
-include: "rules/common.smk"
-include: "rules/other.smk"
-include: "rules/setup.smk"
+include: "rules/cutadapt.smk"
+include: "rules/collapse_reads.smk"
+include: "rules/segemehl.smk"
+include: "rules/samtools.smk"
