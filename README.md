@@ -34,7 +34,7 @@ To Do: add umi-tools rules
 
 ### Step 3. Align reads.
 
-Crosslinking of the RNA-binding protein to the RNA affects reverese transcription step during library preparation, because the crosslinked base will induce base miscorporation or termination of reverse transcriptase (RT) with increased frequency compared to non-crosslinked bases. There are two main variants of CLIP library preparation:
+Crosslinking of the RNA-binding protein to the RNA affects reverse transcription step during library preparation, because the crosslinked base will induce base miscorporation or termination of reverse transcriptase (RT) with increased frequency compared to non-crosslinked bases. There are two main variants of CLIP library preparation:
 
 1. Two adapters are ligated to the RNA on both ends. Reverse transcriptase reads through and only full length cDNA is sequenced. RBP binding site is in the middle of the read and is determined by base mutations and deletions. (PAR-CLIP, HITS-CLIP)
 
@@ -81,7 +81,7 @@ The use of peak caller depends on the type of CLIP data and whether you have rep
 
 #### Option b. You have PAR-CLIP data and replicates. Use either PARALYZER or omniCLIP.
 
-#### Option c. You have other CLIP (eCLIP, iCLIP, ...) that does not rely on 4-thiouridine incorporation and no replicates. Ohler lab cannot help you.
+#### Option c. You have non PAR-CLIP data that does not rely on 4-thiouridine incorporation and no replicates. Ohler lab cannot help you.
 
 #### Option d. You have non-PAR CLIP data and replicates. Use omniCLIP.
 
