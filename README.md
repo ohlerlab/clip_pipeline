@@ -29,7 +29,7 @@ To Do: add umi-tools rules
 
 #### Option a. You have UMIs: use rule umi-tools.
 
-#### Option b. You do not have UMIsi or you do not know: use rule collapse_reads.
+#### Option b. You do not have UMIs or you do not know: use rule collapse_reads.
 
 
 ### Step 3. Align reads.
