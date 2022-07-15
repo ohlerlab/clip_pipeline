@@ -1,3 +1,21 @@
+# Pipeline overview
+
+Part 1. Map reads (implemented)
+
+- Input: fastq
+- Output: bam
+- Parameters:
+    - Adapter sequences
+    - config: has_UMI (T/F)
+    - aligner: segemehl (default), STAR, (bowtie)
+    
+Part 2. Call peaks (not implemented)
+
+- Input: bam, (background bam = total RNA sequencing)
+- Output: bed file with peak coordinates, (scores)
+- Parameters: peak caller (PARALYZER, omniCLIP)
+
+
 # Snakemake workflow: CLIP
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.2.1-brightgreen.svg)](https://snakemake.bitbucket.io)
