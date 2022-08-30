@@ -50,6 +50,7 @@ include: "rules/cutadapt.smk"
 include: "rules/collapse_reads.smk"
 include: "rules/segemehl.smk"
 include: "rules/samtools.smk"
+include: "rules/call_peaks.smk"
 
 
 rule all:
@@ -57,4 +58,4 @@ rule all:
         # The first rule should define the default target files
         # Subsequent target rules can be specified below. They should start with all_*.
       #expand("test_data/{sample}.bam", sample=samples.index)
-       expand(rules.samtools.output,sample=samples.index)
+       expand(rules.samtools.output, sample=samples.index)
