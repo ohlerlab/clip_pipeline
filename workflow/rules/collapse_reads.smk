@@ -5,7 +5,11 @@ rule collapse_reads:
       fastq="test_data/{sample}_trim_collapsed.fq.gz",
     conda:
       "../envs/fastx_toolkit.yaml"
+    singularity:
+      "docker://biocontainers/fastxtools:v0.0.14_cv2"
+    log:
+      "results/logs/collapse_reads_{sample}.log"
     shell:
       """
-      zcat {input.fastq} | fastx_collapser | gzip > {output.fastq}
+      zcat {input.fastq} | fastx_collapser | gzip > {output.fastq} 2> {log}
       """
