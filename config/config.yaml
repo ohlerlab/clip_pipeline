@@ -3,7 +3,7 @@
 # one row per sample. It can be parsed easily via pandas.
 samples: "config/samples.tsv"
 
-FA:
+REFERENCE_GENOME:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
 THREE_PRIME_ADAPTER_SEQUENCE:
   "TGGAATTCTCGGGTGCCAAGG"
@@ -28,11 +28,11 @@ SPECIAL_AD_2:
 SPECIAL_AD_3:
   "TGAGATCGGAAGAGCGGTTCAG"
 THR:
-  "4"
+  "8"
 GTF:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
 SEGE_IDX:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/hg19.segemehl.idx"
+  "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/hg19.segemehl.idx"
 
 
 

@@ -1,3 +1,2 @@
 sample	path
-rep1	test_data/fq1.fq.gz
-rep2	test_data/fq2.fq.gz
+rep1	/fast/AG_Ohler/Rene/clip_project/hg19/gencode/SRR248532.fastq.gz
