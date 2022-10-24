@@ -28,34 +28,20 @@ from glob import glob
 import sys
 
 
-FA=config["FA"]
 GTF=config["GTF"]
 SEGE_IDX=config["SEGE_IDX"]
 
-THREE_PRIME_ADAPTER_SEQUENCE=config["THREE_PRIME_ADAPTER_SEQUENCE"]
-FIVE_PRIME_ADAPTER_SEQUENCE=config["FIVE_PRIME_ADAPTER_SEQUENCE"]
-ICLIP_ADAPTER=config["ICLIP_ADAPTER"]
-HITSCLIP_3ADAPTER=config["HITSCLIP_3ADAPTER"]
-HITSCLIP_5ADAPTER=config["HITSCLIP_5ADAPTER"]
-KIT_5ADAPTER=config["KIT_5ADAPTER"]
-NINETEEN_NUCLEOTIDE_MARKER_SEQUENCE=config["NINETEEN_NUCLEOTIDE_MARKER_SEQUENCE"]
-TWENTY_FOUR_NUCLEOTIDE_MARKER_SEQUENCE=config["TWENTY_FOUR_NUCLEOTIDE_MARKER_SEQUENCE"]
-SPECIAL_AD_1=config["SPECIAL_AD_1"]
-SPECIAL_AD_2=config["SPECIAL_AD_2"]
-SPECIAL_AD_3=config["SPECIAL_AD_3"]
 
-THREADS = config["THR"] 
-
-include: "rules/cutadapt.smk"
+include: "rules/trim_adapt.smk"
 include: "rules/collapse_reads.smk"
-include: "rules/segemehl.smk"
-include: "rules/samtools.smk"
+include: "rules/align_reads.smk"
 include: "rules/call_peaks.smk"
+include: "rules/other.smk"
+include: "rules/common.smk"
 
 
+# The first rule should define the default target files
+# Subsequent target rules can be specified below. They should start with all_*.
 rule all:
     input:
-        # The first rule should define the default target files
-        # Subsequent target rules can be specified below. They should start with all_*.
-      #expand("test_data/{sample}.bam", sample=samples.index)
-       expand(rules.samtools.output, sample=samples.index)
+       	expand(rules.paralyzer.output, sample=samples.index)
