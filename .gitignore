@@ -1,0 +1,6 @@
+.snakemake/
+results/*
+test_data/*
+run.*
+snakejob.*
+*.fq*
