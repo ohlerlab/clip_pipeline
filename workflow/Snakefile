@@ -32,8 +32,7 @@ GTF=config["GTF"]
 SEGE_IDX=config["SEGE_IDX"]
 
 
-include: "rules/trim_adapt.smk"
-include: "rules/collapse_reads.smk"
+include: "rules/process_reads.smk"
 include: "rules/align_reads.smk"
 include: "rules/call_peaks.smk"
 include: "rules/other.smk"
