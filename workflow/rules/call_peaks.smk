@@ -1,7 +1,7 @@
 rule paralyzer_ini:
     input:
         #bam="test_data/{sample}.sorted.bam",
-        sam="test_data/{sample}_aligned.sam",
+        sam="test_data/{sample}_aligned_filtered.sam",
         edit_file="workflow/scripts/editPARalyzerINIfile.pl",
         ini_file="config/Default_PARalyzer_Parameters.ini"
     output:
@@ -19,7 +19,7 @@ rule paralyzer_ini:
 rule paralyzer:
     input:
         #bam="test_data/{sample}.sorted.bam",
-        sam="test_data/{sample}_aligned.sam",
+        sam="test_data/{sample}_aligned_filtered.sam",
         ini_file="results/paralyzer_params_{sample}.ini"
     output: 
         multiext("test_data/peaks/{sample}", config["call_peaks"]["OUTPUT_DISTRIBUTIONS_FILE"], 
