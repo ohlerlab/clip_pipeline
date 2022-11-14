@@ -5,6 +5,8 @@ samples: "config/samples.tsv"
 
 REFERENCE_GENOME:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
+UMI:
+  True
 THREE_PRIME_ADAPTER_SEQUENCE:
   "TGGAATTCTCGGGTGCCAAGG"
 FIVE_PRIME_ADAPTER_SEQUENCE:
