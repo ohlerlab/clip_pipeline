@@ -22,3 +22,33 @@ rule cutadapt:
                 -j {threads} -n {params.repeat_n_times} -m {params.match_read_wildcards} -o {output.fastq} {input.fastq} 2> {log}
       """
 
+rule extract_UMIs:
+    input:
+      fastq="test_data/{sample}_trim.fastq.gz",
+    output:
+      processed="test_data/{sample}_trim_processed.fastq.gz"
+    singularity:
+      "docker://quay.io/biocontainers/umi_tools:1.1.2--py310h1425a21_1"
+    log:
+      "results/logs/extract_UMIs_{sample}.log"
+    shell:
+      """
+      umi_tools extract --stdin={input.fastq} --bc-pattern=config['UMI'] --log={log} --stdout {output.processed}
+      """
+
+
+rule collapse_all_reads:
+    input:
+      fastq="test_data/{sample}_trim.fastq.gz",
+    output:
+      fastq="test_data/{sample}_trim_collapsed.fastq.gz",
+    conda:
+      "../envs/fastx_toolkit.yaml"
+    singularity:
+      "docker://biocontainers/fastxtools:v0.0.14_cv2"
+    log:
+      "results/logs/collapse_reads_{sample}.log"
+    shell:
+      """
+      zcat {input.fastq} | fastx_collapser | gzip > {output.fastq} 2> {log}
+      """
