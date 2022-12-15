@@ -9,7 +9,7 @@ rule segemehl_idx:
     input:
       fasta=config["REFERENCE_GENOME"],
     output:
-      sege_idx=SEGE_IDX,
+      sege_idx=config["REFERENCE_GENOME"] += ".idx",
     conda:
       "../envs/segemehl.yaml"
     singularity:
@@ -25,7 +25,7 @@ rule segemehl_idx:
 rule segemehl:
     input:
       fastq=input_for_segemehl(),
-      sege_idx=SEGE_IDX,
+      sege_idx=rules.segemehl_idx.output.sege_idx
       ref=config["REFERENCE_GENOME"]
     output:
       sam="test_data/{sample}_aligned.sam",

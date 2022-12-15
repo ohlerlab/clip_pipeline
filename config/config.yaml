@@ -4,7 +4,7 @@
 samples: "config/samples.tsv"
 
 REFERENCE_GENOME:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
+  "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/GRCh37.p13.genome.fa"
 UMI:
   True
 THREE_PRIME_ADAPTER_SEQUENCE:
@@ -33,9 +33,6 @@ THR:
   "8"
 GTF:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
-SEGE_IDX:
-  "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/hg19.segemehl.idx"
-
 
 
 call_peaks:

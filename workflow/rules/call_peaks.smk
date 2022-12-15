@@ -1,11 +1,12 @@
 rule paralyzer_ini:
     input:
         #bam="test_data/{sample}.sorted.bam",
+        tbit=config["REFERENCE_GENOME"] += ".2bit",
         sam="test_data/{sample}_aligned_filtered.sam",
-        edit_file="workflow/scripts/editPARalyzerINIfile.pl",
-        ini_file="config/Default_PARalyzer_Parameters.ini"
+        edit_script="workflow/scripts/editPARalyzerINIfile.pl",
+        ini="config/Default_PARalyzer_Parameters.ini"
     output:
-        ini_file="results/paralyzer_params_{sample}.ini"
+        ini="results/paralyzer_params_{sample}.ini"
     singularity:
         "docker://perl:5.36.0-threaded-bullseye"
     log:
@@ -13,14 +14,14 @@ rule paralyzer_ini:
     params:
         path="test_data/peaks/{sample}"
     shell:
-        "perl {input.edit_file} {input.ini_file} {params.path} {input.sam} > {output.ini_file} 2> {log}"
+        "perl {input.edit_script} {input.ini} {params.path} {input.sam} {input.tbit} > {output.ini} 2> {log}"
 
 
 rule paralyzer:
     input:
         #bam="test_data/{sample}.sorted.bam",
         sam="test_data/{sample}_aligned_filtered.sam",
-        ini_file="results/paralyzer_params_{sample}.ini"
+        ini="results/paralyzer_params_{sample}.ini"
     output: 
         multiext("test_data/peaks/{sample}", config["call_peaks"]["OUTPUT_DISTRIBUTIONS_FILE"], 
                                             config["call_peaks"]["OUTPUT_GROUPS_FILE"], 
@@ -35,5 +36,5 @@ rule paralyzer:
     resources:
         mem_gb=12
     shell:
-        "PARalyzer {resources.mem_gb}G {input.ini_file} 2> {log}"
+        "PARalyzer {resources.mem_gb}G {input.ini} 2> {log}"
 
