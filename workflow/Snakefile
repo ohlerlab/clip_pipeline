@@ -16,21 +16,12 @@ report: "report/workflow.rst"
 singularity: "docker://continuumio/miniconda3"
 
 ## To Do :
-#cluster config
 #strand invertion
-
-
-# CLIP specific parameters
 
 shell.executable("/bin/bash")
 from os import path
 from glob import glob
 import sys
-
-
-GTF=config["GTF"]
-SEGE_IDX=config["SEGE_IDX"]
-
 
 include: "rules/process_reads.smk"
 include: "rules/align_reads.smk"
