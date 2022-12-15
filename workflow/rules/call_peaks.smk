@@ -1,7 +1,7 @@
 rule paralyzer_ini:
     input:
         #bam="test_data/{sample}.sorted.bam",
-        tbit=config["REFERENCE_GENOME"] += ".2bit",
+        tbit=config["REFERENCE_GENOME"] + ".2bit",
         sam="test_data/{sample}_aligned_filtered.sam",
         edit_script="workflow/scripts/editPARalyzerINIfile.pl",
         ini="config/Default_PARalyzer_Parameters.ini"
