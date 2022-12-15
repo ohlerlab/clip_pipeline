@@ -1,4 +1,4 @@
-( $iniFile, $outputDirectory, $inputFile ) = @ARGV;
+( $iniFile, $outputDirectory, $inputFile, $tbitFile ) = @ARGV;
 
 open(USRFL, "<", $iniFile) or die "Can't open $iniFile\n";
 while(<USRFL>) {
@@ -9,6 +9,7 @@ while(<USRFL>) {
 close USRFL;
 
 print "\n";
+print "GENOME_2BIT_FILE=$tbitFile\n";
 print "SAM_FILE=$inputFile\=COLLAPSED\n\n";
 print "OUTPUT_DISTRIBUTIONS_FILE=$outputDirectory\.distribution\n";
 print "OUTPUT_GROUPS_FILE=$outputDirectory\.groups\n";
