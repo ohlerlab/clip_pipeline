@@ -4,3 +4,6 @@ test_data/*
 run.*
 snakejob.*
 *.fq*
+*.fastq*
+workflow/scripts/seperator.py
+deduplicated.*
