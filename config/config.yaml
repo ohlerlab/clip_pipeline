@@ -5,8 +5,8 @@ samples: "config/samples.tsv"
 
 REFERENCE_GENOME:
   "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/GRCh37.p13.genome.fa"
-UMI:
-  True
+UMI-BARCODE:
+  "(?P<umi_1>.{4}).*(?P<umi_2>.{4})$"
 THREE_PRIME_ADAPTER_SEQUENCE:
   "TGGAATTCTCGGGTGCCAAGG"
 FIVE_PRIME_ADAPTER_SEQUENCE:
