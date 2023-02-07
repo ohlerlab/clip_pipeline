@@ -1,27 +1,44 @@
 rule convert_sam2bam:
     input:
-      sam="test_data/{sample}_aligned_filtered.sam",
+      sam="results/prepare_aligned/{sample}_aligned_filtered.sam",
     output:
-      bam="test_data/{sample}_sorted.bam",
-      bai="test_data/{sample}_sorted.bam.bai",
+      bam="results/prepare_aligned/{sample}_sorted.bam",
+      bai="results/prepare_aligned/{sample}_sorted.bam.bai",
     conda:
       "../envs/samtools.yaml"
     singularity:
       "docker://quay.io/biocontainers/samtools:1.9--h91753b0_8"
     log:
-      "results/logs/samtools_{sample}"
+      "results/logs/samtools_s2b_{sample}"
     shell:
       """
-      samtools view -b {input.sam} | samtools sort -o {output.bam} - &&
+      samtools view -S -b {input.sam} | samtools sort -o {output.bam} - &&
       samtools index {output.bam} 2> {log}
+      """
+
+
+rule convert_bam2sam:
+    input:
+      bam_dedup="results/prepare_aligned/{sample}_sorted_deduplicated.bam"
+    output:
+      sam_dedup="results/prepare_aligned/{sample}_sorted_deduplicated.sam"
+    conda:
+      "../envs/samtools.yaml"
+    singularity:
+      "docker://quay.io/biocontainers/samtools:1.9--h91753b0_8"
+    log:
+      "results/logs/samtools_b2s_{sample}"
+    shell:
+      """
+      samtools view -h -o {output.sam_dedup} {input.bam_dedup} 2> {log}
       """
 
 
 rule filter_unmapped:
     input: 
-      sam="test_data/{sample}_aligned.sam"
+      sam="results/align_reads/{sample}_aligned.sam"
     output:
-      sam_filtered="test_data/{sample}_aligned_filtered.sam"
+      sam_filtered="results/prepare_aligned/{sample}_aligned_filtered.sam"
     conda:
       "../envs/samtools.yaml"
     singularity:
@@ -34,9 +51,9 @@ rule filter_unmapped:
 
 rule UMI_deduplicate:
       input:
-        bam="test_data/{sample}_sorted.bam"
+        bam="results/prepare_aligned/{sample}_sorted.bam"
       output:
-        bam_dedup="test_data/{sample}_sorted_deduplicated.bam"
+        bam_dedup="results/prepare_aligned/{sample}_sorted_deduplicated.bam"
       singularity:
         "docker://quay.io/biocontainers/umi_tools:1.1.2--py310h1425a21_1"
       shell:
