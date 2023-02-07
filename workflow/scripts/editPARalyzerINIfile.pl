@@ -10,7 +10,7 @@ close USRFL;
 
 print "\n";
 print "GENOME_2BIT_FILE=$tbitFile\n";
-print "SAM_FILE=$inputFile\=COLLAPSED\n\n";
+print "SAM_FILE=$inputFile\n\n";
 print "OUTPUT_DISTRIBUTIONS_FILE=$outputDirectory\.distribution\n";
 print "OUTPUT_GROUPS_FILE=$outputDirectory\.groups\n";
 print "OUTPUT_CLUSTERS_FILE=$outputDirectory\.clusters\n";
