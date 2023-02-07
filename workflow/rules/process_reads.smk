@@ -2,7 +2,7 @@ rule cutadapt:
     input:
       fastq=lambda wc : samples.loc[wc.sample, "path"],
     output:
-      fastq="test_data/{sample}_trim.fastq.gz",
+      fastq="results/process_reads/{sample}_trim.fastq.gz",
     conda:
       "../envs/cutadapt.yaml"
     singularity:
@@ -24,24 +24,28 @@ rule cutadapt:
 
 rule extract_UMIs:
     input:
-      fastq="test_data/{sample}_trim.fastq.gz",
+      fastq="results/process_reads/{sample}_trim.fastq.gz",
     output:
-      processed="test_data/{sample}_trim_processed.fastq.gz"
+      processed="results/process_reads/{sample}_trim_umi-extr.fastq.gz"
     singularity:
       "docker://quay.io/biocontainers/umi_tools:1.1.2--py310h1425a21_1"
     log:
       "results/logs/extract_UMIs_{sample}.log"
+    resources:
+      mem_mb_per_cpu='8G'
+    params:
+      pattern=lambda wc: config['UMI-BARCODE']
     shell:
       """
-      umi_tools extract --stdin={input.fastq} --bc-pattern=config['UMI'] --log={log} --stdout {output.processed}
+      umi_tools extract --stdin={input.fastq} --extract-method=regex --bc-pattern={params.pattern:q} --log={log} --stdout {output.processed}
       """
 
 
 rule collapse_all_reads:
     input:
-      fastq="test_data/{sample}_trim.fastq.gz",
+      fastq="results/process_reads/{sample}_trim.fastq.gz",
     output:
-      fastq="test_data/{sample}_trim_collapsed.fastq.gz",
+      collapsed="results/process_reads/{sample}_trim_collapsed.fastq.gz",
     conda:
       "../envs/fastx_toolkit.yaml"
     singularity:
@@ -50,5 +54,5 @@ rule collapse_all_reads:
       "results/logs/collapse_reads_{sample}.log"
     shell:
       """
-      zcat {input.fastq} | fastx_collapser | gzip > {output.fastq} 2> {log}
+      zcat {input.fastq} | fastx_collapser | gzip > {output.collapsed} 2> {log}
       """
