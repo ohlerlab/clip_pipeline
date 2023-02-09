@@ -3,6 +3,8 @@
 # one row per sample. It can be parsed easily via pandas.
 samples: "config/samples.tsv"
 
+SHELL_EXEC:
+  "/bin/bash"
 REFERENCE_GENOME:
   "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/GRCh37.p13.genome.fa"
 UMI-BARCODE:

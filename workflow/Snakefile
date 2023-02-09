@@ -13,12 +13,12 @@ validate(samples, schema="schemas/samples.schema.yaml")
 report: "report/workflow.rst"
 
 # Allow users to fix the underlying OS via singularity.
-singularity: "docker://continuumio/miniconda3"
+container: "docker://continuumio/miniconda3"
 
 ## To Do :
 #strand invertion
 
-shell.executable("/bin/bash")
+shell.executable(config["SHELL_EXEC"])
 from os import path
 from glob import glob
 import sys
