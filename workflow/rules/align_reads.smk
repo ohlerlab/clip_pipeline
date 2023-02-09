@@ -23,7 +23,7 @@ rule segemehl_idx:
 
 rule segemehl:
     input:
-      fastq=lambda: "results/process_reads/{sample}_trim_umi-extr.fastq.gz" if config['UMI-BARCODE'] is not False else "results/process_reads/{sample}_trim_collapsed.fastq.gz",
+      fastq=lambda wildcards: "results/process_reads/{sample}_trim_umi-extr.fastq.gz".format(sample=wildcards.sample) if config['UMI-BARCODE'] is not False else "results/process_reads/{sample}_trim_collapsed.fastq.gz".format(sample=wildcards.sample),
       sege_idx=rules.segemehl_idx.output.sege_idx,
       ref=config["REFERENCE_GENOME"]
     output:
