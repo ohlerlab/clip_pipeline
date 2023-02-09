@@ -1,13 +1,5 @@
-def input_for_segemehl():
-    if config['UMI-BARCODE'] is not False:
-      return "results/process_reads/{sample}_trim_umi-extr.fastq.gz"
-    else:
-      return "results/process_reads/{sample}_trim_collapsed.fastq.gz"
-
-
 def get_mem_mb(wildcards, attempt):
-    return str(attempt**2 * 16) + 'G'
-
+  return str(attempt**2 * 16) + 'G'
 
 rule segemehl_idx:
     input:
@@ -16,7 +8,7 @@ rule segemehl_idx:
       sege_idx=config["REFERENCE_GENOME"] + ".idx",
     conda:
       "../envs/segemehl.yaml"
-    singularity:
+    container:
       "docker://quay.io/biocontainers/segemehl:0.3.1--h39379e4_3"
     log:
       "results/logs/segemehl_idx.log"
@@ -31,7 +23,7 @@ rule segemehl_idx:
 
 rule segemehl:
     input:
-      fastq=input_for_segemehl(),
+      fastq=lambda: "results/process_reads/{sample}_trim_umi-extr.fastq.gz" if config['UMI-BARCODE'] is not False else "results/process_reads/{sample}_trim_collapsed.fastq.gz",
       sege_idx=rules.segemehl_idx.output.sege_idx,
       ref=config["REFERENCE_GENOME"]
     output:
@@ -39,7 +31,7 @@ rule segemehl:
       unmapped="results/align_reads/{sample}_segemehl_unmapped.fastq"
     conda:
       "../envs/segemehl.yaml"     
-    singularity:
+    container:
       "docker://quay.io/biocontainers/segemehl:0.3.1--h39379e4_3"
     log:
       "results/logs/segemehl_{sample}.log"
