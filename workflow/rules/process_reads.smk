@@ -1,6 +1,16 @@
-rule cutadapt:
+rule fix_header:
     input:
       fastq=lambda wc : samples.loc[wc.sample, "path"],
+    output:
+      fastq="results/process_reads/{sample}_fix.fastq.gz",
+    shell:
+      """
+      zcat {input.fastq} | sed s'/ /:/g' | gzip > {output.fastq}
+      """
+
+rule cutadapt:
+    input:
+      fastq="results/process_reads/{sample}_fix.fastq.gz",
     output:
       fastq="results/process_reads/{sample}_trim.fastq.gz",
     conda:

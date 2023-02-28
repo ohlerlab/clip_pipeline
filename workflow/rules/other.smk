@@ -36,7 +36,8 @@ rule convert_bam2sam:
 
 rule filter_unmapped:
     input: 
-      sam="results/align_reads/{sample}_aligned.sam"
+      sam="results/align_reads/{sample}_aligned.sam",
+      main_chr_bed=config["REFERENCE_GENOME"] + ".main_chr.bed"
     output:
       sam_filtered="results/prepare_aligned/{sample}_aligned_filtered.sam"
     conda:
@@ -47,9 +48,27 @@ rule filter_unmapped:
       "results/logs/samtools_filter_unmapped_{sample}"
     shell:
       """
-      samtools view -h -F 4 {input.sam} > {output.sam_filtered}
+      samtools view -h -F 4 -L {input.main_chr_bed} {input.sam} > {output.sam_filtered}
       """
 
+rule main_chromosomes:
+    input:
+      fa=config["REFERENCE_GENOME"]
+    output:
+      fai=config["REFERENCE_GENOME"] + ".fai",
+      main_chr_bed=config["REFERENCE_GENOME"] + ".main_chr.bed"
+    conda:
+      "../envs/samtools.yaml"
+    container:
+      "docker://quay.io/biocontainers/samtools:1.9--h91753b0_8"
+    log:
+      "results/logs/main_chr_bed.log"
+    shell:
+      """
+      samtools faidx {input.fa} &&
+      cat {output.fai} | grep chr | grep -v chrM | cut -f 1,2 | awk '{{print $1,"1",$2}}' OFS="\t" > {output.main_chr_bed}
+      """
+ 
 
 rule UMI_deduplicate:
     input:

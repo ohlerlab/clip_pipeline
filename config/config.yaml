@@ -6,7 +6,7 @@ samples: "config/samples.tsv"
 SHELL_EXEC:
   "/bin/bash"
 REFERENCE_GENOME:
-  "/fast/AG_Ohler/Rene/clip_project/hg19/gencode/GRCh37.p13.genome.fa"
+  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
 UMI-BARCODE:
   "(?P<umi_1>.{4}).*(?P<umi_2>.{4})$"
 THREE_PRIME_ADAPTER_SEQUENCE:
