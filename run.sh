@@ -8,11 +8,12 @@
 #$ -j yes
 #$ -l m_mem_free=4G
 #$ -l h_rt=4:0:0
+#$ -o logs/
 
-test -d logs/cluster || { >&2 echo "logs/cluster does not exist"; exit 1; }
+#test -d logs/cluster || { >&2 echo "logs/cluster does not exist"; exit 1; }
+mkdir -p logs/
 
-eval "$(conda shell.bash hook)"
-
+eval "$(/${HOME}/miniconda3/bin/conda shell.bash hook)"
 conda activate snakemake
 
 if [ -f mounts.txt ]; then
@@ -29,7 +30,7 @@ fi
 snakemake --snakefile workflow/Snakefile \
           --use-singularity \
 	      --singularity-args "--nv ${MOUNT}" \
-          --cluster "qsub -V -cwd -pe smp {threads} -l m_mem_free={resources.mem_mb_per_cpu} -l h_rt=3:0:0 -j yes " \
+          --cluster "qsub -V -cwd -pe smp {threads} -l m_mem_free={resources.mem_mb_per_cpu} -l h_rt=3:0:0 -j yes -o logs/" \
           --default-resources "mem_mb_per_cpu=str(max(2*input.size_mb, 1000)/1000)+'G'" \
           --directory "${PWD}" \
           --jobs 100 \
