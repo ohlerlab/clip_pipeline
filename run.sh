@@ -33,6 +33,7 @@ snakemake --snakefile workflow/Snakefile \
           --default-resources "mem_mb_per_cpu=str(max(2*input.size_mb, 1000)/1000)+'G'" \
           --directory "${PWD}" \
           --jobs 100 \
+          --rerun-incomplete \
           --latency-wait 30 \
           --keep-going \
           --show-failed-logs \
