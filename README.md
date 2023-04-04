@@ -9,7 +9,7 @@ Part 1. Map reads (implemented)
     - config: has_UMI (T/F)
     - aligner: segemehl (default), STAR, (bowtie)
     
-Part 2. Call peaks (not implemented)
+Part 2. Call peaks (only PARalyzer implemented)
 
 - Input: bam, (background bam = total RNA sequencing)
 - Output: bed file with peak coordinates, (scores)
