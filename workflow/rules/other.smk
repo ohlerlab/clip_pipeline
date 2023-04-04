@@ -47,7 +47,7 @@ rule filter_unmapped:
       "results/logs/samtools_filter_unmapped_{sample}"
     shell:
       """
-      samtools view -h -F 4 {input.sam} > {output.sam_filtered}
+      samtools view -h -F 4 {input.sam} > {output.sam_filtered} 2> {log}
       """
 
 
@@ -62,7 +62,7 @@ rule UMI_deduplicate:
       "results/logs/umi_tools_deduplicate_{sample}"
     shell:
       """
-      umi_tools dedup -I {input.bam} --output-stats=deduplicated -S {output.bam_dedup}
+      umi_tools dedup -I {input.bam} --output-stats=deduplicated -S {output.bam_dedup} 2> {log}
       """
 
 
@@ -76,4 +76,6 @@ rule faToTwoBit_fa:
     container:
       "docker://quay.io/biocontainers/ucsc-fatotwobit:377--ha8a8165_5"
     shell:
-      "faToTwoBit {input.fa} {output.tbit}"
+      """
+      faToTwoBit {input.fa} {output.tbit} 2> {log}
+      """
