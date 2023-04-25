@@ -30,6 +30,7 @@ rule convert_bam2sam:
       "results/logs/samtools_b2s_{sample}"
     shell:
       """
+      samtools index {input.bam_dedup} 2> {log} &&
       samtools view -h -o {output.sam_dedup} {input.bam_dedup} 2> {log}
       """
 

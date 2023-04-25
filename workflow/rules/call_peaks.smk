@@ -36,35 +36,35 @@ rule paralyzer:
 
 rule omniclip_db:
     input:
-        gene_anot_gff=config["GTF"]
+        gene_anot_gff=config["GFF"]
     output:
-        db_sql="results/omniclip/{sample}_db.sql"
+        db_sql="results/omniclip/{sample}_db.db"
     container:
-        "docker://imetools/omniclip_docker:v1.0.0"
+        "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
         "results/logs/omniclip/omniclip_{sample}_db.log"
     resources:
     shell:
         """
-        path_in_container_to_python3 /opt/omniCLIP/omniCLIP.py generateDB --gff-file {input.gene_anot_gff} --db-file {output.db_sql} 2> {log}
+        omniCLIP generateDB --gff-file {input.gene_anot_gff} --db-file {output.db_sql} 2> {log}
         """
 
 
 rule omniclip_parse_bg:
     input:
-        db_sql="results/omniclip/{sample}_db.sql",
+        db_sql="results/omniclip/{sample}_db.db",
         background_bam=config["BACKGROUND"],
-        ref=config["REFERENCE_GENOME"]
+        ref=config["GENOME_DIR"]
     output:
         bg_dat="results/omniclip/{sample}_bg.dat"
     container:
-        "docker://imetools/omniclip_docker:v1.0.0"
+        "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
         "results/logs/omniclip/omniclip_{sample}_parse_bg.log"
     resources:
     shell:
         """
-        path_in_container_to_python3 /opt/omniCLIP/omniCLIP.py parsingBG --db-file {input.db_sql} --genome-dir {input.ref} \
+        omniCLIP parsingBG --db-file {input.db_sql} --genome-dir {input.ref} \
         --bg-files {input.background_bam} --out-file {output.bg_dat} 2> {log}
         """
 
@@ -72,36 +72,39 @@ rule omniclip_parse_bg:
 rule omniclip_parse_clip:
     input:
         clip_bam="results/prepare_aligned/{sample}_sorted_deduplicated.bam",
-        db_sql="results/omniclip/{sample}_db.sql",
-        ref=config["REFERENCE_GENOME"]
+        db_sql="results/omniclip/{sample}_db.db",
+        ref=config["GENOME_DIR"]
     output:
         clip_dat="results/omniclip/{sample}_clip.dat"
     container:
-        "docker://imetools/omniclip_docker:v1.0.0"
+        "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
         "results/logs/omniclip/omniclip_{sample}_parse_clip.log"
     resources:
+        mem_mb_per_cpu='12G'
     shell:
         """
-        path_in_container_to_python3 /opt/omniCLIP/omniCLIP.py parsingCLIP --db-file {input.db_sql} --genome-dir {input.ref} \
+        omniCLIP parsingCLIP --db-file {input.db_sql} --genome-dir {input.ref} \
         --clip-files {input.clip_bam} --out-file {output.clip_dat} 2> {log}
         """
 
 
 rule omniclip_run:
     input:
-        db_sql="results/omniclip/{sample}_db.sql",
+        db_sql="results/omniclip/{sample}_db.db",
         bg_dat="results/omniclip/{sample}_bg.dat",
         clip_dat="results/omniclip/{sample}_clip.dat"
     output:
-        directory("results/omniclip/output_{sample}/")
+        outdir=directory("results/omniclip/output_{sample}/")
     container:
-        "docker://imetools/omniclip_docker:v1.0.0"
+        "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
         "results/logs/omniclip/omniclip_{sample}_run.log"
     resources:
+        mem_mb_per_cpu='12G'
     shell:
         """
-        path_in_container_to_python3 /opt/omniCLIP/omniCLIP.py run_omniCLIP --db-file {input.db_sql} --bg-dat {input.bg_dat} \
-        --clip-dat {input.clip_dat} --out-dir {output} 2> {log}
+        mkdir -p {output.outdir} &&
+        omniCLIP run_omniCLIP --db-file {input.db_sql} --bg-dat {input.bg_dat} \
+        --clip-dat {input.clip_dat} --out-dir {output.outdir} 2> {log}
         """
