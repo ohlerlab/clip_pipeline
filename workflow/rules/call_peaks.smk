@@ -62,6 +62,7 @@ rule omniclip_parse_bg:
     log:
         "results/logs/omniclip/omniclip_{sample}_parse_bg.log"
     resources:
+        mem_mb_per_cpu='12G'
     shell:
         """
         omniCLIP parsingBG --db-file {input.db_sql} --genome-dir {input.ref} \
@@ -72,6 +73,7 @@ rule omniclip_parse_bg:
 rule omniclip_parse_clip:
     input:
         clip_bam="results/prepare_aligned/{sample}_sorted_deduplicated.bam",
+        clip_idx="results/prepare_aligned/{sample}_sorted_deduplicated.bam.bai",
         db_sql="results/omniclip/{sample}_db.db",
         ref=config["GENOME_DIR"]
     output:

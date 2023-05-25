@@ -42,7 +42,7 @@ GFF:
 GTF:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
 BACKGROUND:
-  "/fast/AG_Ohler/svetlana/Stoecklin/RNA_seq_Fabian/star/C8Y28ACXX_FP_May16_16s002853-1-2_Ibberson_lane1C1_sequence.bam.plus"
+  "test_data/test_backgr.bam"
 
 
 call_peaks:

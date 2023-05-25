@@ -85,6 +85,19 @@ rule UMI_deduplicate:
       umi_tools dedup -I {input.bam} --output-stats=deduplicated -S {output.bam_dedup} 2> {log}
       """
 
+rule index_bam:
+    input:
+      bam_dedup="results/prepare_aligned/{sample}_sorted_deduplicated.bam"
+    output:
+      idx="results/prepare_aligned/{sample}_sorted_deduplicated.bam.bai"
+    container:
+      "docker://quay.io/biocontainers/samtools:1.9--h91753b0_8"
+    shell:
+      """
+      samtools index {input.bam_dedup} 
+      """
+
+
 
 rule faToTwoBit_fa:
     input:
