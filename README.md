@@ -23,7 +23,15 @@ Part 2. Call peaks (PARalyzer and omniCLIP)
 - Output: bed file with peak coordinates and scores
 - Parameters: peak caller (PARALYZER, omniCLIP)
 
+# Expected output
 
+An igv screenshot after successful run on the test data:
+
+<img src="https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png"/>
+
+Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
+- `pred.bed` is the peaks called by omniCLIP (found in `results/omniclip`). 
+- `test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling (found in `results/prepare_aligned`) which uses `test_backgr.bam` (RNAseq file provided within `test_data`).
 
 # Known bugs
 
