@@ -1,10 +1,34 @@
 # Pipeline overview
 
+This pipeline is to map reads and call peaks for CLIP data. Our lab developed two peak callers that can be used in this workflow: [PARALYZER](https://ohlerlab.mdc-berlin.de/software/PARalyzer_85/) and [omniCLIP](https://github.com/ohlerlab/omniCLIP).
+
+We are greatful to the people who created containers for those tools.
+
+# Prerequisites
+
+This pipeline is configured to run on a cluster with Sun Grid Engine queuing system. It requires snakemake and singularity to run.
+
 # Preparation of the input
 
-CLIP file is expected to be a single end fastq.gz. Genome has to exist both as a single .fa file and a directory with a fasta.gz file for each chromosome. Right now we are filtering to only include main chromosomes into the output.
+1. CLIP raw reads: a single end fastq.gz from Illumina (`test_data/CLIP.fastq.gz`).
+2. Reference genome: 
+    1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
+    2. A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR) - only for omniCLIP peak caller.
+    3. An annotation, gtf and gff (gff only for omniCLIP peak caller) (specify path in `config.yaml` GTF and GFF; [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
+3. A background bam file - only for omniCLIP peak caller (`test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
 
-For omniCLIP, a background bam file is needed. We use total RNA-seq; make sure that it is sorted and indexed. It is often so that RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly.
+# Expected output
+
+An igv screenshot after successful run on the test data:
+<img src="https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png">
+[https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png](https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png)
+
+Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
+- `results/omniclip/pred.bed` is the peaks called by omniCLIP
+- `results/prepare_aligned/test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling
+- you can create a bed file from PARALYZER output as follows: `awk '{FS=","}{OFS="\t"}{print $1,$3,$4,".",".",$2}' results/call_peaks/test.clusters | tail -n+2 > results/call_peaks/test_clusters.bed`
+
+Note that `config/config.yaml` contains settings for PARALYZER peak caller parameters which you can modify to achieve desired peak calling results.
 
 # Description of steps
 
@@ -23,15 +47,6 @@ Part 2. Call peaks (PARalyzer and omniCLIP)
 - Output: bed file with peak coordinates and scores
 - Parameters: peak caller (PARALYZER, omniCLIP)
 
-# Expected output
-
-An igv screenshot after successful run on the test data:
-
-<img src="https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png"/>
-
-Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
-- `pred.bed` is the peaks called by omniCLIP (found in `results/omniclip`). 
-- `test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling (found in `results/prepare_aligned`) which uses `test_backgr.bam` (RNAseq file provided within `test_data`).
 
 # Known bugs
 
@@ -118,13 +133,14 @@ Ohler lab has 2 peak callers:
 
 The use of peak caller depends on the type of CLIP data and whether you have replicates.
 
-#### Option a. You have PAR-CLIP data and no replicates. Use PARALYZER.
+#### Option a. You have PAR-CLIP data but no backgound RNA-seq. Use PARALYZER.
 
-#### Option b. You have PAR-CLIP data and replicates. Use either PARALYZER or omniCLIP.
+#### Option b. You have PAR-CLIP data and backgound RNA-seq. Use either PARALYZER or omniCLIP.
 
-#### Option c. You have non PAR-CLIP data that does not rely on 4-thiouridine incorporation and no replicates. Ohler lab cannot help you.
+#### Option c. You have non-PAR CLIP data and background RNA-seq. Use omniCLIP.
 
-#### Option d. You have non-PAR CLIP data and replicates. Use omniCLIP.
+#### Option d. You have non PAR-CLIP data and no background RNA-seq. Ohler lab cannot help you.
+
 
 
 
