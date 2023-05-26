@@ -34,4 +34,6 @@ include: "rules/common.smk"
 # Subsequent target rules can be specified below. They should start with all_*.
 rule all:
     input:
-       	expand(rules.omniclip_run.output, sample=samples.index)
+       	expand(rules.omniclip_run.output, sample=samples.index),
+        expand(rules.paralyzer.output, sample=samples.index)
+
