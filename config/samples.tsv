@@ -1,3 +1,2 @@
 sample	path
-rep1	test_data/fq1.fq.gz
-rep2	test_data/fq2.fq.gz
+test	test_data/CLIP.fastq.gz

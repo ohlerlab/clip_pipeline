@@ -1,5 +1,13 @@
 # Pipeline overview
 
+# Preparation of the input
+
+CLIP file is expected to be a single end fastq.gz. Genome has to exist both as a single .fa file and a directory with a fasta.gz file for each chromosome. Right now we are filtering to only include main chromosomes into the output.
+
+For omniCLIP, a background bam file is needed. We use total RNA-seq; make sure that it is sorted and indexed. It is often so that RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly.
+
+# Description of steps
+
 Part 1. Map reads (implemented)
 
 - Input: fastq
@@ -7,14 +15,29 @@ Part 1. Map reads (implemented)
 - Parameters:
     - Adapter sequences
     - config: has_UMI (T/F)
-    - aligner: segemehl (default), STAR, (bowtie)
+    - aligner: segemehl (default) (STAR, bowtie - not implemented)
     
-Part 2. Call peaks (not implemented)
+Part 2. Call peaks (PARalyzer and omniCLIP)
 
-- Input: bam, (background bam = total RNA sequencing)
-- Output: bed file with peak coordinates, (scores)
+- Input: bam, omniCLIP requires background = total RNA sequencing bam; omniCLIP requires genome direstory with each chromosome as a separate fasta.gz.
+- Output: bed file with peak coordinates and scores
 - Parameters: peak caller (PARALYZER, omniCLIP)
 
+# Expected output
+
+An igv screenshot after successful run on the test data:
+
+<img src="https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png"/>
+
+Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
+- `pred.bed` is the peaks called by omniCLIP (found in `results/omniclip`). 
+- `test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling (found in `results/prepare_aligned`) which uses `test_backgr.bam` (RNAseq file provided within `test_data`).
+
+# Known bugs
+
+## omniCLIP
+
+- Caution: CLIP bam file HAS TO have reads mapping to EVERY chromosome of the reference genome. If the data is very sparse and there is a chromosome with no reads mapping to it, the pipeline will fail.
 
 # Snakemake workflow: CLIP
 
@@ -24,7 +47,7 @@ Part 2. Call peaks (not implemented)
 
 ## Authors
 
-* Ohler (@lebedeva)
+* Ohler (@lebedeva, @reschmi)
 
 # CLIP Pipeline description
 

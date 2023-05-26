@@ -1,0 +1,8 @@
+.snakemake/
+results/*
+run.*
+snakejob.*
+*.fq*
+
+workflow/scripts/seperator.py
+deduplicated.*

@@ -3,8 +3,16 @@
 # one row per sample. It can be parsed easily via pandas.
 samples: "config/samples.tsv"
 
-FA:
+SHELL_EXEC:
+  "/bin/bash"
+REFERENCE_GENOME:
+  #"/fast/AG_Ohler/Rene/clip_project/hg38/gencode/GRCh37.p13.genome.fa"
+  #"/fast/AG_Ohler/Rene/clip_project/hg38/gencode/ncbi_dataset/data/GCF_000001405.40/GCF_000001405.40_GRCh38.p14_genomic.fna"
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
+GENOME_DIR:
+  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/only_reference_chromosomes/"
+UMI-BARCODE:
+  "(?P<umi_1>.{4}).*(?P<umi_2>.{4})$"
 THREE_PRIME_ADAPTER_SEQUENCE:
   "TGGAATTCTCGGGTGCCAAGG"
 FIVE_PRIME_ADAPTER_SEQUENCE:
@@ -28,8 +36,33 @@ SPECIAL_AD_2:
 SPECIAL_AD_3:
   "TGAGATCGGAAGAGCGGTTCAG"
 THR:
-  "4"
+  "8"
+GFF:
+  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gff3"
 GTF:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
-SEGE_IDX:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/hg19.segemehl.idx"
+BACKGROUND:
+  "test_data/test_backgr.bam"
+
+
+call_peaks:
+  BANDWIDTH: 3
+  CONVERSION: T>C
+  MINIMUM_READ_COUNT_PER_GROUP: 5
+  MINIMUM_READ_COUNT_PER_CLUSTER: 5
+  MINIMUM_READ_COUNT_FOR_KDE: 5
+  MINIMUM_CLUSTER_SIZE: 8
+  MINIMUM_CONVERSION_LOCATIONS_FOR_CLUSTER: 1
+  MINIMUM_CONVERSION_COUNT_FOR_CLUSTER: 1
+  MINIMUM_READ_COUNT_FOR_CLUSTER_INCLUSION: 5
+  MINIMUM_READ_LENGTH: 13
+  MAXIMUM_NUMBER_OF_NON_CONVERSION_MISMATCHES: 0
+
+  OUTPUT_DISTRIBUTIONS_FILE: ".distribution"
+  OUTPUT_GROUPS_FILE: ".groups"
+  OUTPUT_CLUSTERS_FILE: ".clusters"
+  OUTPUT_READS_FILE: "_PARalyzer_Utilized.sam"
+
+  EXTEND_BY_READ: True
+  HAFFNER_APPROACH: False
+  ADDITIONAL_NUCLEOTIDES_BEYOND_SIGNAL: 0
