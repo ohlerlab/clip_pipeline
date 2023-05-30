@@ -35,13 +35,7 @@ git clone https://github.com/ohlerlab/clip_pipeline
 cd clip_pipeline/
 ```
 
-### Step 2: Configure workflow
-
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
-
-
-
-### Step 3: Install Snakemake
+### Step 2: Install Snakemake
 
 Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
@@ -51,9 +45,9 @@ Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-g
 
 For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
-### Step 4: Install additional packages
+### Step 3: Install additional packages
 
-Install singularity, if it is not available in your system:
+Install singularity, if it is not available in your system (make sure that it is version 3.x):
 
     mamba install -c conda-forge singularity
 
@@ -61,7 +55,7 @@ Install faSplit form UCSC, if you need to create separate files for each chromos
 
     mamba install -c bioconda ucsc-fasplit
 
-### Step 5: Prepare input data
+### Step 4: Prepare input data
 
 Change the paths in `config/config.yaml` to the actual path for your genome and annotation:
 
@@ -115,6 +109,12 @@ To submit a job that runs snakemake, you can use `run.sh`, which contains some s
     qsub run.sh 
 
 See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
+
+### Step 7: Execute workflow on your data
+
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
+
+
 
 ---
 
