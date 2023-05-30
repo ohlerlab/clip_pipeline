@@ -10,12 +10,12 @@ This pipeline is configured to run on a cluster with Sun Grid Engine queuing sys
 
 # Preparation of the input
 
-1. CLIP raw reads: a single end fastq.gz from Illumina (`test_data/CLIP.fastq.gz`).
+1. CLIP raw reads: a single end fastq.gz from Illumina (use `test_data/CLIP.fastq.gz` for test run).
 2. Reference genome: 
-    1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
-    2. A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR) - only for omniCLIP peak caller.
-    3. An annotation, gtf and gff (gff only for omniCLIP peak caller) (specify path in `config.yaml` GTF and GFF; [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
-3. A background bam file - only for omniCLIP peak caller (`test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
+    1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; use [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
+    2. [omniCLIP only] A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR). You can use [UCSC faSplit](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faSplit) to split your reference fasta by chromosome  like this `faSplit byname GRCm38.p6.genome.fa [GENOME_DIR]`.
+    3. An annotation: gtf and [omniCLIP only] gff (specify path in `config.yaml` GTF and GFF; use [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
+3. [omniCLIP only] A background bam file (`test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
 
 # Expected output
 
