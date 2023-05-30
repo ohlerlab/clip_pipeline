@@ -2,7 +2,7 @@
 
 This pipeline is to map reads and call peaks for CLIP data. Our lab developed two peak callers that can be used in this workflow: [PARALYZER](https://ohlerlab.mdc-berlin.de/software/PARalyzer_85/) and [omniCLIP](https://github.com/ohlerlab/omniCLIP).
 
-We are greatful to the people who created containers for those tools (Zavolan lab for omniCLIP).
+We are grateful to the people who created containers for those tools (Biocontainers for everything and Zavolan lab for omniCLIP).
 
 ## Authors
 
@@ -14,7 +14,7 @@ This pipeline is configured to run on a cluster with Sun Grid Engine queuing sys
 
 # Description of the input
 
-1. CLIP raw reads: a single end fastq.gz from Illumina (use the provided `test_data/CLIP.fastq.gz` for test run).
+1. CLIP raw reads: a single end fastq.gz from Illumina (`test_data/CLIP.fastq.gz`).
 2. Reference genome: 
     1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; use [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
     2. [omniCLIP only] A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR). You can use [UCSC faSplit](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faSplit) to split your reference fasta by chromosome  like this `faSplit byname GRCm38.p6.genome.fa [GENOME_DIR]`.
@@ -81,8 +81,15 @@ Split the genome fasta file into separate chromosomes, if necessary:
     faSplit byname GRCh37.p13.genome.fa hg19_by_chr/
     for file in hg19_by_chr/*.fa; do gzip $file & done
 
+Alternatively, specify the path to the folder with the separate chromosomes in `config/config.yaml`:
 
-### Step 6: Execute workflow
+```
+GENOME_DIR:
+  "hg19_by_chr/"
+```
+
+
+### Step 6: Execute workflow on test data
 
 Activate the conda environment:
 
@@ -96,7 +103,7 @@ Execute the workflow locally via
 
     snakemake --use-singularity --cores $N
 
-using `$N` cores. 
+using `$N` cores. You will need at least 30G RAM for generating the segemehl index. 
 
 To submit a job that runs snakemake, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
 
@@ -109,10 +116,11 @@ See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/exe
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
 
 
-
 ---
 
 # Expected output
+
+The output is in the folder `results`.
 
 An igv screenshot after successful run on the test data:
 <img src="https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png">
