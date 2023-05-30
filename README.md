@@ -2,7 +2,11 @@
 
 This pipeline is to map reads and call peaks for CLIP data. Our lab developed two peak callers that can be used in this workflow: [PARALYZER](https://ohlerlab.mdc-berlin.de/software/PARalyzer_85/) and [omniCLIP](https://github.com/ohlerlab/omniCLIP).
 
-We are greatful to the people who created containers for those tools.
+We are greatful to the people who created containers for those tools (Zavolan lab for omniCLIP).
+
+## Authors
+
+* Ohler (@lebedeva, @reschmi)
 
 # Prerequisites
 
@@ -10,12 +14,109 @@ This pipeline is configured to run on a cluster with Sun Grid Engine queuing sys
 
 # Preparation of the input
 
-1. CLIP raw reads: a single end fastq.gz from Illumina (use `test_data/CLIP.fastq.gz` for test run).
+1. CLIP raw reads: a single end fastq.gz from Illumina (use the provided `test_data/CLIP.fastq.gz` for test run).
 2. Reference genome: 
     1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; use [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
     2. [omniCLIP only] A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR). You can use [UCSC faSplit](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faSplit) to split your reference fasta by chromosome  like this `faSplit byname GRCm38.p6.genome.fa [GENOME_DIR]`.
     3. An annotation: gtf and [omniCLIP only] gff (specify path in `config.yaml` GTF and GFF; use [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
 3. [omniCLIP only] A background bam file (`test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
+
+## Usage
+
+If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and, if available, its DOI (see above).
+
+### Step 1: Obtain a copy of this workflow
+
+1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
+2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository to your local system, into the place where you want to perform the data analysis.
+
+```
+git clone https://github.com/ohlerlab/clip_pipeline
+cd clip_pipeline/
+```
+
+### Step 2: Configure workflow
+
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
+
+
+
+### Step 3: Install Snakemake
+
+Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
+
+    conda create -c bioconda -c conda-forge -n snakemake mamba
+    conda activate snakemake
+    mamba install snakemake
+
+For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
+
+### Step 4: Install additional packages
+
+Install singularity, if it is not available in your system:
+
+    mamba install -c conda-forge singularity
+
+Install faSplit form UCSC, if you need to create separate files for each chromosome:
+
+    mamba install -c bioconda ucsc-fasplit
+
+### Step 5: Prepare input data
+
+Change the paths in `config/config.yaml` to the actual path for your genome and annotation:
+
+```
+## Reference genome and annotation:
+REFERENCE_GENOME:
+  "GRCh37.p13.genome.fa"
+GFF:
+  "gencode.v19.annotation.gff3"
+GTF:
+  "gencode.v19.annotation.gtf"
+```
+
+Alternatively: link existing genome to the main directory:
+
+    ln -s /path/to/GRCh37.p13.genome.fa .
+    ln -s /path/to/gencode.v19.annotation.gff3 .
+    ln -s /path/to/gencode.v19.annotation.gtf .
+    
+Alternatively: download the genome file and the annotation if you do not have them on your system:
+
+    wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz
+    gunzip *.gz
+
+
+Split the genome fasta file into separate chromosomes, if necessary:
+
+    mkdir -p hg19_by_chr
+    faSplit byname GRCh37.p13.genome.fa hg19_by_chr/
+    for file in hg19_by_chr/*.fa; do gzip $file & done
+
+
+### Step 6: Execute workflow
+
+Activate the conda environment:
+
+    conda activate snakemake
+
+Test your configuration by performing a dry-run via
+
+    snakemake --use-singularity -nrp
+
+Execute the workflow locally via
+
+    snakemake --use-singularity --cores $N
+
+using `$N` cores. 
+
+To submit a job that runs snakemake, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
+
+    qsub run.sh 
+
+See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
+
+---
 
 # Expected output
 
@@ -24,13 +125,16 @@ An igv screenshot after successful run on the test data:
 [https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png](https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png)
 
 Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
+
+Load the following files into igv:
+
 - `results/omniclip/pred.bed` is the peaks called by omniCLIP
 - `results/prepare_aligned/test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling
 - you can create a bed file from PARALYZER output as follows: `awk '{FS=","}{OFS="\t"}{print $1,$3,$4,".",".",$2}' results/call_peaks/test.clusters | tail -n+2 > results/call_peaks/test_clusters.bed`
 
 Note that `config/config.yaml` contains settings for PARALYZER peak caller parameters which you can modify to achieve desired peak calling results.
 
-# Description of steps
+# Detailed description of steps
 
 Part 1. Map reads (implemented)
 
@@ -48,23 +152,8 @@ Part 2. Call peaks (PARalyzer and omniCLIP)
 - Parameters: peak caller (PARALYZER, omniCLIP)
 
 
-# Known bugs
 
-## omniCLIP
-
-- Caution: CLIP bam file HAS TO have reads mapping to EVERY chromosome of the reference genome. If the data is very sparse and there is a chromosome with no reads mapping to it, the pipeline will fail.
-
-# Snakemake workflow: CLIP
-
-[![Snakemake](https://img.shields.io/badge/snakemake-≥6.2.1-brightgreen.svg)](https://snakemake.bitbucket.io)
-[![Build Status](https://travis-ci.org/snakemake-workflows/CLIP.svg?branch=master)](https://travis-ci.org/snakemake-workflows/CLIP)
-
-
-## Authors
-
-* Ohler (@lebedeva, @reschmi)
-
-# CLIP Pipeline description
+# CLIP description
 
 CLIP is a series of methods of determining RNA-binding protein (RBP) binding sites on the transcriptome. It uses UV crosslinking to covalently attach RBPs to RNA, which can be enhanced using nucleotide analogs such is 4-thiouridine (called PAR-CLIP). The RNA-protein complexes are digested with RNase to create a short footprint, enirched by immunoprecipitation of the RBP and sequenced. This pipeline provides tools for mapping of Illumina-sequenced CLIP libraries and calling the RBP binding sites.
 
@@ -144,57 +233,10 @@ The use of peak caller depends on the type of CLIP data and whether you have rep
 
 
 
-## Usage
 
-If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and, if available, its DOI (see above).
+# Known bugs
 
-### Step 1: Obtain a copy of this workflow
+## omniCLIP
 
-1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
-2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository to your local system, into the place where you want to perform the data analysis.
-
-### Step 2: Configure workflow
-
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
-
-### Step 3: Install Snakemake
-
-Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
-
-    conda create -c bioconda -c conda-forge -n snakemake mamba
-    conda activate snakemake
-    mamba install snakemake
-
-For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
-
-### Step 4: Execute workflow
-
-Activate the conda environment:
-
-    conda activate snakemake
-
-Test your configuration by performing a dry-run via
-
-    snakemake --use-conda -n  
-    snakemake --use-singularity -n
-
-Execute the workflow locally via
-
-    snakemake --use-conda --cores $N
-    snakemake --use-singularity --cores $N
-
-using `$N` cores. 
-
-To submit a job that runs snakemake, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
-
-    qsub run.sh 
-
-See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
-
-
-## Testing
-
-Test cases are in the subfolder `.test`. They are automatically executed via continuous integration with [Github Actions](https://github.com/features/actions).
-
-
+- Caution: CLIP bam file HAS TO have reads mapping to EVERY chromosome of the reference genome. If the data is very sparse and there is a chromosome with no reads mapping to it, the pipeline will fail. This is one of the reasons we do not currently use scaffolds but only main chromosomes.
 
