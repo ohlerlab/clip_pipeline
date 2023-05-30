@@ -5,14 +5,22 @@ samples: "config/samples.tsv"
 
 SHELL_EXEC:
   "/bin/bash"
+
+## Reference genome and annotation:
 REFERENCE_GENOME:
-  #"/fast/AG_Ohler/Rene/clip_project/hg38/gencode/GRCh37.p13.genome.fa"
-  #"/fast/AG_Ohler/Rene/clip_project/hg38/gencode/ncbi_dataset/data/GCF_000001405.40/GCF_000001405.40_GRCh38.p14_genomic.fna"
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
 GENOME_DIR:
   "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/only_reference_chromosomes/"
+GFF:
+  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gff3"
+GTF:
+  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
+
+## UMIs if present:
 UMI-BARCODE:
   "(?P<umi_1>.{4}).*(?P<umi_2>.{4})$"
+
+## All possible CLIP adapter sequences:
 THREE_PRIME_ADAPTER_SEQUENCE:
   "TGGAATTCTCGGGTGCCAAGG"
 FIVE_PRIME_ADAPTER_SEQUENCE:
@@ -35,16 +43,16 @@ SPECIAL_AD_2:
   "CTCGTATGCCGTCTTCTGCTTG"
 SPECIAL_AD_3:
   "TGAGATCGGAAGAGCGGTTCAG"
+
+## Number of threads:
 THR:
   "8"
-GFF:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gff3"
-GTF:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
+
+## RNA-seq background for omniCLIP:
 BACKGROUND:
   "test_data/test_backgr.bam"
 
-
+## PARALYZER settings:
 call_peaks:
   BANDWIDTH: 3
   CONVERSION: T>C
