@@ -12,7 +12,7 @@ We are greatful to the people who created containers for those tools (Zavolan la
 
 This pipeline is configured to run on a cluster with Sun Grid Engine queuing system. It requires snakemake and singularity to run.
 
-# Preparation of the input
+# Description of the input
 
 1. CLIP raw reads: a single end fastq.gz from Illumina (use the provided `test_data/CLIP.fastq.gz` for test run).
 2. Reference genome: 
@@ -68,13 +68,7 @@ GFF:
 GTF:
   "gencode.v19.annotation.gtf"
 ```
-
-Alternatively: link existing genome to the main directory:
-
-    ln -s /path/to/GRCh37.p13.genome.fa .
-    ln -s /path/to/gencode.v19.annotation.gff3 .
-    ln -s /path/to/gencode.v19.annotation.gtf .
-    
+   
 Alternatively: download the genome file and the annotation if you do not have them on your system:
 
     wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz
