@@ -127,7 +127,7 @@ An igv screenshot after successful run on the test data:
 <img src="https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png">
 [https://github.com/ohlerlab/clip_pipeline/blob/omniclip/test_data/expected_output.png](https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png)
 
-Navigate to gene CYR61 or any of the regions in `test_data/regions.bed` to check the results. 
+Navigate to chr1:86,047,775-86,050,811 (or any of the regions in `test_data/regions.bed` if you used whole genome reference) to check the results. 
 
 Load the following files into igv:
 
