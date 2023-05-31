@@ -121,7 +121,61 @@ Configure the workflow according to your needs via editing the files in the `con
 
 # Expected output
 
-The output is in the folder `results`.
+The output is in the folder `results`. The `[sample]` is the sample name you gave in `samples.tsv`.
+
+## Aligned reads
+
+`results/prepare_aligned/[sample]_sorted_deduplicated.bam` contains the aligned reads from the CLIP sample.
+
+## Called peaks
+
+### PARALYZER
+
+`results/call_peaks` contains output from PARALYZER. 
+
+You are mostly interested in `[sample].clusters` file which has the following structure:
+
+```
+Chromosome,Strand,ClusterStart,ClusterEnd,ClusterID,ClusterSequence,ReadCount,ModeLocation,ModeScore,ConversionLocationCount,ConversionEventCount,NonConversionEventCount
+chr1,+,86048856,86048921,G7.1,CTTGAGGAGCATTAAGGTATTTCGAAACTGCCAAGGGTGCTGGTGCGGATGGACACTAATGCAGCC,63,86048905,0.9407689813401,12,16,305
+chr1,+,86048970,86048992,G7.2,TTCATTTTGGAGCTTGTGGAGTT,21,86048982,0.8242463078856529,6,9,150
+chr1,+,86048998,86049001,G7.3,CTTT,22,86049000,0.5344784636094164,2,2,60
+```
+
+See [readme](https://ohlerlab.mdc-berlin.de/files/duke/PARalyzer/README.txt) for the description of the complete output.
+
+Note that `config/config.yaml` contains settings for PARALYZER peak caller parameters which you can modify to achieve desired peak calling results.
+
+
+### omniCLIP
+
+`results/omniclip/output_[sample]` contains output of omniCLIP:
+
+1. `pred.txt` - this is the raw peaks output
+
+- Gene : gene
+- ChrName   : chr
+- Start : peak start
+- Stop : peak end
+- Strand : peak strand
+- SiteScore : the log-likelihood ratio of the peak state versus the other states
+- Coverage : peak coverage
+- A.A A.C A.G A.T A.D C.A C.C C.G C.T C.D G.A G.C G.G G.T G.D T.A T.C T.G T.T T.D : counts of mutations and deletions 
+- mean_mat_fg, var_mat_fg, mean_mat_bg, var_mat_bg : the means and variances of the Negative binomial models for modeling the read coverage 
+- counts_fg, counts_bg : read coverage in foreground (CLIP) and background 
+- pv : the log10 of the p-value
+- max_pos : position of maximum coverage
+- dir_score: the likelihood of the Dirichlet model for modeling the diagnostic events
+
+
+2. `pred.bed` - these are the final selected peaks
+
+Score : SiteScore normalized to be maximum 1000:
+Score = Score/ ( max(SiteScore) * 0.001 )
+
+ThickStart and ThickEnd: position of the maximum coverage
+
+### Visualize the results
 
 An igv screenshot after successful run on the test data:
 <img src="https://github.com/ohlerlab/clip_pipeline/blob/main/test_data/expected_output.png">
@@ -135,7 +189,6 @@ Load the following files into igv:
 - `results/prepare_aligned/test_sorted_deduplicated.bam` is the CLIP bam file used for peak calling
 - you can create a bed file from PARALYZER output as follows: `awk '{FS=","}{OFS="\t"}{print $1,$3,$4,".",".",$2}' results/call_peaks/test.clusters | tail -n+2 > results/call_peaks/test_clusters.bed`
 
-Note that `config/config.yaml` contains settings for PARALYZER peak caller parameters which you can modify to achieve desired peak calling results.
 
 # Detailed description of steps
 
