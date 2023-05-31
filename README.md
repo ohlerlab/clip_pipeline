@@ -103,7 +103,7 @@ Execute the workflow locally via
 
     snakemake --use-singularity --cores $N
 
-using `$N` cores. You will need at least 30G RAM for generating the segemehl index. 
+using `$N` cores. You will need at least 30G RAM (recommended 64G) for generating the segemehl index of human genome. 
 
 To submit a job that runs snakemake, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
 
