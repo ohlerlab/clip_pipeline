@@ -14,10 +14,11 @@ rule segemehl_idx:
       "results/logs/segemehl_idx.log"
     resources:
       mem_mb_per_cpu=get_mem_mb
+    threads: config["THR"]
     retries: 2
     shell:
       """
-      segemehl.x -x {output.sege_idx} -d {input.fasta} 2> {log}
+      segemehl.x -t {threads} -x {output.sege_idx} -d {input.fasta} 2> {log}
       """
 
 
@@ -35,7 +36,7 @@ rule segemehl:
       "docker://quay.io/biocontainers/segemehl:0.3.1--h39379e4_3"
     log:
       "results/logs/segemehl_{sample}.log"
-    threads: 8
+    threads: config["THR"]
     resources:
       mem_mb_per_cpu='8G'
     params:

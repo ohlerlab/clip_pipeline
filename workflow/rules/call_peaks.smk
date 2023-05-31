@@ -104,9 +104,12 @@ rule omniclip_run:
         "results/logs/omniclip/omniclip_{sample}_run.log"
     resources:
         mem_mb_per_cpu='12G'
+    threads: config["THR"]
+    params:
+        max_it=config["MAX_IT"]
     shell:
         """
         mkdir -p {output.outdir} &&
-        omniCLIP run_omniCLIP --db-file {input.db_sql} --bg-dat {input.bg_dat} \
+        omniCLIP run_omniCLIP --max-it {params.max_it} --nb-cores {threads} --db-file {input.db_sql} --bg-dat {input.bg_dat} \
         --clip-dat {input.clip_dat} --out-dir {output.outdir} 2> {log}
         """

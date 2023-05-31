@@ -8,13 +8,13 @@ SHELL_EXEC:
 
 ## Reference genome and annotation:
 REFERENCE_GENOME:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/GRCh37.p13.genome.fa"
+  "chr1.fa"
 GENOME_DIR:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/only_reference_chromosomes/"
+  "chr1_by_chr/"
 GFF:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gff3"
+  "gencode.v19.annotation.gff3"
 GTF:
-  "/fast/AG_Ohler/svetlana/Genomes/hg19/gencode/annotation/gencode.v19.annotation.gtf"
+  "gencode.v19.annotation.gtf"
 
 ## UMIs if present:
 UMI-BARCODE:
@@ -46,11 +46,14 @@ SPECIAL_AD_3:
 
 ## Number of threads:
 THR:
-  "8"
+  8
 
 ## RNA-seq background for omniCLIP:
 BACKGROUND:
   "test_data/test_backgr.bam"
+
+## omniCLIP settings
+MAX_IT: 10
 
 ## PARALYZER settings:
 call_peaks:

@@ -19,7 +19,7 @@ rule cutadapt:
       "docker://quay.io/biocontainers/cutadapt:3.5--py39h38f01e4_0"
     log: 
       "results/logs/cutadapt_{sample}.log" 
-    threads: 2
+    threads: config["THR"]
     params:
       three_prime_adapter_sequence=config["THREE_PRIME_ADAPTER_SEQUENCE"],
       five_prime_adapter_sequence=config["FIVE_PRIME_ADAPTER_SEQUENCE"],
