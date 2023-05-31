@@ -74,6 +74,7 @@ Alternatively: download the genome file and the annotation if you do not have th
     wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz
     gunzip *.gz
 
+Note: if you would like to run the test locally, download only [chr1 from ucsc](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr1.fa.gz) instead of the whole genome.
 
 Split the genome fasta file into separate chromosomes, if necessary:
 
