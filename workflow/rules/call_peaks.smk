@@ -54,9 +54,11 @@ rule omniclip_parse_bg:
     input:
         db_sql="results/omniclip/{sample}_db.db",
         background_bam=config["BACKGROUND"],
-        ref=config["GENOME_DIR"]
+        split="results/logs/split_chr.done"
     output:
         bg_dat="results/omniclip/{sample}_bg.dat"
+    params:
+        ref=config["REFERENCE_GENOME"].replace(".fa","_by_chr")
     container:
         "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
@@ -65,7 +67,7 @@ rule omniclip_parse_bg:
         mem_mb_per_cpu='12G'
     shell:
         """
-        omniCLIP parsingBG --db-file {input.db_sql} --genome-dir {input.ref} \
+        omniCLIP parsingBG --db-file {input.db_sql} --genome-dir {params.ref} \
         --bg-files {input.background_bam} --out-file {output.bg_dat} 2> {log}
         """
 
@@ -75,9 +77,11 @@ rule omniclip_parse_clip:
         clip_bam="results/prepare_aligned/{sample}_sorted_deduplicated.bam",
         clip_idx="results/prepare_aligned/{sample}_sorted_deduplicated.bam.bai",
         db_sql="results/omniclip/{sample}_db.db",
-        ref=config["GENOME_DIR"]
+        split="results/logs/split_chr.done"
     output:
         clip_dat="results/omniclip/{sample}_clip.dat"
+    params:
+        ref=config["REFERENCE_GENOME"].replace(".fa","_by_chr")
     container:
         "docker://zavolab/omniclip:master_83e44f8a044227afb3d457ee33a8da7e07964d91_9"
     log:
@@ -86,7 +90,7 @@ rule omniclip_parse_clip:
         mem_mb_per_cpu='12G'
     shell:
         """
-        omniCLIP parsingCLIP --db-file {input.db_sql} --genome-dir {input.ref} \
+        omniCLIP parsingCLIP --db-file {input.db_sql} --genome-dir {params.ref} \
         --clip-files {input.clip_bam} --out-file {output.clip_dat} 2> {log}
         """
 

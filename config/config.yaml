@@ -9,8 +9,6 @@ SHELL_EXEC:
 ## Reference genome and annotation:
 REFERENCE_GENOME:
   "chr1.fa"
-GENOME_DIR:
-  "chr1_by_chr/"
 GFF:
   "gencode.v19.annotation.gff3"
 GTF:

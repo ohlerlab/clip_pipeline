@@ -69,7 +69,21 @@ rule main_chromosomes:
       samtools faidx {input.fa} &&
       cat {output.fai} | grep chr | grep -v chrM | cut -f 1,2 | awk '{{print $1,"1",$2}}' OFS="\t" > {output.main_chr_bed}
       """
- 
+
+
+rule split_chromosomes:
+    input:
+      fa=config["REFERENCE_GENOME"]
+    output:
+      "results/logs/split_chr.done"
+    params:
+      outdir=config["REFERENCE_GENOME"].replace(".fa", "_by_chr")
+    shell: 
+      """
+      mkdir -p {params.outdir} &&
+      awk -v outdir={params.outdir} '/^>.+/ {{OUT=outdir "/" substr($0,2) ".fa"}}; {{print >> OUT; close(OUT)}}' {input.fa} &&
+      gzip {params.outdir}/*.fa  && touch {output}
+      """
 
 rule UMI_deduplicate:
     input:

@@ -14,12 +14,12 @@ This pipeline is configured to run on a cluster with Sun Grid Engine queuing sys
 
 # Description of the input
 
-1. CLIP raw reads: a single end fastq.gz from Illumina (`test_data/CLIP.fastq.gz`).
+1. CLIP raw reads: a single end fastq.gz from Illumina (file for testing provided in `test_data/CLIP.fastq.gz`).
 2. Reference genome: 
     1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; use [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
     2. [omniCLIP only] A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR). You can use [UCSC faSplit](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faSplit) to split your reference fasta by chromosome  like this `faSplit byname GRCm38.p6.genome.fa [GENOME_DIR]`.
     3. An annotation: gtf and [omniCLIP only] gff (specify path in `config.yaml` GTF and GFF; use [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
-3. [omniCLIP only] A background bam file (`test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
+3. [omniCLIP only] A background bam file (provided in `test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
 
 ## Usage
 
@@ -50,12 +50,23 @@ For installation details, see the [instructions in the Snakemake documentation](
 Install singularity, if it is not available in your system (make sure that it is version 3.x):
 
     mamba install -c conda-forge singularity
+ 
+### Step 4: Execute workflow on test data
 
-Install faSplit form UCSC, if you need to create separate files for each chromosome:
 
-    mamba install -c bioconda ucsc-fasplit
+Test your configuration by performing a dry-run via
 
-### Step 4: Prepare input data
+   bash test_run.sh --dry-run 
+
+Execute the test workflow locally via
+
+   bash test_run.sh 
+
+It will download sequence for human chr1 and hg19 gtf/gff3 annotation. 
+
+### Step 5: Execute workflow on your data
+
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
 
 Change the paths in `config/config.yaml` to the actual path for your genome and annotation:
 
@@ -68,54 +79,31 @@ GFF:
 GTF:
   "gencode.v19.annotation.gtf"
 ```
-   
-Alternatively: download the genome file and the annotation if you do not have them on your system:
 
-    wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz
-    gunzip *.gz
+Specify your input files in "config/samples.tsv"
 
-Note: if you would like to run the test locally, download only [chr1 from ucsc](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr1.fa.gz) instead of the whole genome.
-
-Split the genome fasta file into separate chromosomes, if necessary:
-
-    mkdir -p hg19_by_chr
-    faSplit byname GRCh37.p13.genome.fa hg19_by_chr/
-    for file in hg19_by_chr/*.fa; do gzip $file & done
-
-Alternatively, specify the path to the folder with the separate chromosomes in `config/config.yaml`:
+Provide a background RNA-seq bam file if you would like to run omniCLIP. Make sure it has the same strandedness as the CLIP input file:
 
 ```
-GENOME_DIR:
-  "hg19_by_chr/"
+## RNA-seq background for omniCLIP:
+BACKGROUND:
+  "test_data/test_backgr.bam"
 ```
 
+Provide directories to mount to containers in 'mounts.txt', if necessary.
 
-### Step 6: Execute workflow on test data
+You can run the pipeline locally:
 
-Activate the conda environment:
+    snakemake --use-singularity
 
-    conda activate snakemake
+Note that you will need at least 30G RAM ([recommended 64G](https://www.bioinf.uni-leipzig.de/Software/segemehl/)) for generating the segemehl index of human genome. 
 
-Test your configuration by performing a dry-run via
+To submit a job that runs snakemake to SGE cluster, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
 
-    snakemake --use-singularity -nrp
+    qsub run.sh
 
-Execute the workflow locally via
-
-    snakemake --use-singularity --cores $N
-
-using `$N` cores. You will need at least 30G RAM ([recommended 64G](https://www.bioinf.uni-leipzig.de/Software/segemehl/)) for generating the segemehl index of human genome. 
-
-To submit a job that runs snakemake, you can use `run.sh`, which contains some sensible default parameters for an SGE queueing system.
-
-    qsub run.sh 
 
 See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
-
-### Step 7: Execute workflow on your data
-
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
-
 
 ---
 
