@@ -6,7 +6,8 @@ We are grateful to the people who created containers for those tools (Biocontain
 
 ## Authors
 
-* Ohler (@lebedeva, @reschmi)
+* Svetlana Lebedeva (@lebedeva), Senior postdoc, Ohler group
+* René Schmiedler (@reschmi), intern, Ohler group
 
 # Prerequisites
 
