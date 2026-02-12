@@ -1,33 +1,43 @@
 # The main entry point of your workflow.
-# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+# After configuring config.yaml and samples.tsv, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
 
-configfile: "config/config.yaml"
-
+import os
+from os import path
+from glob import glob
+import sys
 import pandas as pd
 from snakemake.utils import validate
 
+# Variable for the source code directory
+# Allows this workflow to be deployable directly from github
+CODE_DIR = workflow.basedir
+
+# Main configuration file
+# It will be copied to the target directory of where the workflow is deployed to
+configfile: "config/config.yaml"
+
+# Samplesheet (uses path to samples.tsv defined in config.yaml)
 samples = pd.read_csv(config["samples"], sep="\t").set_index("sample", drop=False)
 samples.index.names = ["sample_id"]
-validate(samples, schema="schemas/samples.schema.yaml")
 
-report: "report/workflow.rst"
+# Validation schema for the samplesheet
+validate(samples, schema=os.path.join(CODE_DIR,"schemas/samples.schema.yaml"))
+
+# Global directives
+report: os.path.join(CODE_DIR, "report/workflow.rst")
+# Add a default value for bash executable if config is not set
+shell.executable(config.get("SHELL_EXEC", "/bin/bash"))
 
 # Allow users to fix the underlying OS via singularity.
 container: "docker://continuumio/miniconda3"
 
-## To Do :
-#strand invertion
-
-shell.executable(config["SHELL_EXEC"])
-from os import path
-from glob import glob
-import sys
-
-include: "rules/process_reads.smk"
-include: "rules/align_reads.smk"
-include: "rules/call_peaks.smk"
-include: "rules/other.smk"
-include: "rules/common.smk"
+# Modular rules
+include: os.path.join(CODE_DIR, "rules/process_reads.smk")
+include: os.path.join(CODE_DIR, "rules/align_reads.smk")
+include: os.path.join(CODE_DIR, "rules/call_peaks.smk")
+include: os.path.join(CODE_DIR, "rules/other.smk")
+include: os.path.join(CODE_DIR, "rules/common.smk")
+## To Do :add strand invertion rule
 
 
 # The first rule should define the default target files
