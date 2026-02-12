@@ -17,7 +17,7 @@ This pipeline is configured to run on a cluster with Sun Grid Engine queuing sys
 
 1. CLIP raw reads: a single end fastq.gz from Illumina (file for testing provided in `test_data/CLIP.fastq.gz`).
 2. Reference genome: 
-    1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; use [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz) for the test data)
+    1. A single .fa file (specify path in `config.yaml` REFERENCE_GENOME; for example [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz))
     2. [omniCLIP only] A directory with a fasta.gz file for each chromosome. (specify path in `config.yaml` GENOME_DIR). You can use [UCSC faSplit](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faSplit) to split your reference fasta by chromosome  like this `faSplit byname GRCm38.p6.genome.fa [GENOME_DIR]`.
     3. An annotation: gtf and [omniCLIP only] gff (specify path in `config.yaml` GTF and GFF; use [gencode.v19.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) and [gencode.v19.annotation.gff3](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz) for the test data)
 3. [omniCLIP only] A background bam file (provided in `test_data/test_backgr.bam`). We use total RNA-seq; make sure that it is indexed. Also make sure that it is the same strandedness as the CLIP bam (standard RNA-seq is sequencing the reverse strand and small RNA-seq the forward strand, in this case you need to invert the strand of the background bam file for peak calling to work correctly).
@@ -38,13 +38,17 @@ cd clip_pipeline/
 
 ### Step 2: Install Snakemake
 
-Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
+For example, install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
     conda create -c bioconda -c conda-forge -n snakemake mamba
     conda activate snakemake
     mamba install snakemake
 
-For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
+For more installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
+
+You will also need pandas:
+
+    mamba install pandas
 
 ### Step 3: Install additional packages
 
@@ -63,7 +67,15 @@ Execute the test workflow locally via
 
    bash test_run.sh 
 
-It will download sequence for human chr1 and hg19 gtf/gff3 annotation. 
+It will download sequence for human chr1 and hg19 gtf/gff3 annotation (derived from [GRCh37.p13.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz)). 
+
+Check the `results/` folder after successful execution (see section [Expected output](#expected-output) below for more details on each output subfolder).
+
+ - `align_reads` : contains alignment files in `.sam` format
+ - `call_peaks` : results of the PARalyzer peak caller - your main file is `[sample].clusters` in `.csv` format
+ - `omniclip` : results of the omniCLIP peak caller - find final called peaks for each sample in `.bed` format as `output_[sample]/pred.bed`
+ - `prepare_aligned` : contains final sorted and deduplicated alignment files in `.bam` and `.sam` format
+ - `process_reads` : intermediate fastq files after adapter trimming and extracting UMIs
 
 ### Step 5: Execute workflow on your data
 
