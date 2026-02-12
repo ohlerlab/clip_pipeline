@@ -44,14 +44,15 @@ fi
 
 
 # Start snakemake locally
-snakemake -rp --snakefile workflow/Snakefile \
-          --use-singularity \
-	      --singularity-args "--nv ${MOUNT}" \
-          --directory "${PWD}" \
-          --jobs 100 \
-          --rerun-incomplete \
-          --latency-wait 30 \
-          --keep-going \
-          --show-failed-logs \
-          "$@"
-          
+snakemake \
+    --printshellcmds \
+    --snakefile workflow/Snakefile \
+    --software-deployment-method apptainer \
+    --apptainer-args "--nv ${MOUNT}" \
+    --directory "${PWD}" \
+    --cores 10 \
+    --rerun-incomplete \
+    --latency-wait 30 \
+    --keep-going \
+    --show-failed-logs \
+    "$@"
