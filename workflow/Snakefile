@@ -21,10 +21,10 @@ samples = pd.read_csv(config["samples"], sep="\t").set_index("sample", drop=Fals
 samples.index.names = ["sample_id"]
 
 # Validation schema for the samplesheet
-validate(samples, schema=os.path.join(CODE_DIR,"schemas/samples.schema.yaml"))
+validate(samples, schema=workflow.source_path("schemas/samples.schema.yaml"))
 
 # Global directives
-report: os.path.join(CODE_DIR, "report/workflow.rst")
+report: workflow.source_path("report/workflow.rst")
 # Add a default value for bash executable if config is not set
 shell.executable(config.get("SHELL_EXEC", "/bin/bash"))
 
@@ -32,11 +32,11 @@ shell.executable(config.get("SHELL_EXEC", "/bin/bash"))
 container: "docker://continuumio/miniconda3"
 
 # Modular rules
-include: os.path.join(CODE_DIR, "rules/process_reads.smk")
-include: os.path.join(CODE_DIR, "rules/align_reads.smk")
-include: os.path.join(CODE_DIR, "rules/call_peaks.smk")
-include: os.path.join(CODE_DIR, "rules/other.smk")
-include: os.path.join(CODE_DIR, "rules/common.smk")
+include: workflow.source_path("rules/process_reads.smk")
+include: workflow.source_path("rules/align_reads.smk")
+include: workflow.source_path("rules/call_peaks.smk")
+include: workflow.source_path("rules/other.smk")
+include: workflow.source_path("rules/common.smk")
 ## To Do :add strand invertion rule
 
 

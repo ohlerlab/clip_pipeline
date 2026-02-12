@@ -2,7 +2,7 @@ rule paralyzer_ini:
     input:
         tbit=config["REFERENCE_GENOME"] + ".2bit",
         sam=lambda wildcards: "results/prepare_aligned/{sample}_sorted_deduplicated.sam".format(sample=wildcards.sample) if config['UMI-BARCODE'] is not False else "results/prepare_aligned/{sample}_aligned_filtered.sam=COLLAPSED".format(sample=wildcards.sample),
-        edit_script=os.path.join(CODE_DIR, "scripts/editPARalyzerINIfile.pl"),
+        edit_script=workflow.source_path("scripts/editPARalyzerINIfile.pl"),
         ini="config/Default_PARalyzer_Parameters.ini"
     output:
         ini=temp("results/paralyzer_params_{sample}.ini")
