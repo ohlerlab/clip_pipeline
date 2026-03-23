@@ -1,6 +1,6 @@
 name: samtools
 channels:
-      - defaults
+      - nodefaults
       - bioconda
 dependencies:
       - samtools=1.9

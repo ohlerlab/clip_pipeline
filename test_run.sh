@@ -13,8 +13,9 @@
 #test -d logs/cluster || { >&2 echo "logs/cluster does not exist"; exit 1; }
 mkdir -p logs/
 
-eval "$(/${HOME}/miniconda3/bin/conda shell.bash hook)"
-conda activate snakemake
+# uncomment if using conda
+#eval "$(/${HOME}/miniconda3/bin/conda shell.bash hook)"
+#conda activate snakemake
 
 if [ -f mounts.txt ]; then
     >&2 echo "mounts.txt file is present..."
@@ -41,7 +42,9 @@ if [ ! -f gencode.v19.annotation.gff3 ]; then
     wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gff3.gz &&
     gunzip gencode.v19.annotation.gff3.gz 
 fi
-
+if [ ! -f homosapiens_smallRNA.fa ]; then
+    wget https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/clipseq/v_2_0/genome/homosapiens_smallRNA.fa
+fi
 
 # Start snakemake locally
 snakemake \

@@ -13,6 +13,8 @@ GFF:
   "gencode.v19.annotation.gff3"
 GTF:
   "gencode.v19.annotation.gtf"
+NCRNA:
+  "homosapiens_smallRNA.fa"
 
 ## UMIs if present:
 UMI-BARCODE:

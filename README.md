@@ -103,7 +103,14 @@ BACKGROUND:
   "test_data/test_backgr.bam"
 ```
 
-Provide directories to mount to containers in 'mounts.txt', if necessary.
+Provide directories to mount to containers in `mounts.txt`, if necessary (for example, for the location of your genome reference). 
+`mounts.txt` is a tab-separated file like this:
+```
+source  destination
+
+```
+Make sure to leave an empty newline at the end of the file!
+
 
 You can run the pipeline locally:
 

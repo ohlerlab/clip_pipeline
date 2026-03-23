@@ -1,0 +1,7 @@
+name: bowtie_env
+channels:
+  - bioconda
+  - conda-forge
+  - nodefaults
+dependencies:
+  - bowtie=1.1.2
